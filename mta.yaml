@@ -1,0 +1,126 @@
+_schema-version: 3.3.0
+ID: SuppliersData
+description: A simple CAP project.
+version: 1.0.0
+modules:
+- name: SuppliersData-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: SuppliersData-db
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    instances: 1
+  build-parameters:
+    builder: npm-ci
+- name: SuppliersData-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: SuppliersData-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: SuppliersData-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: SuppliersData-destination-service
+    parameters:
+      content-target: true
+  - name: SuppliersData_html_repo_host
+    parameters:
+      service-key:
+        name: SuppliersData_html_repo_host-key
+  - name: uaa_SuppliersData
+    parameters:
+      service-key:
+        name: uaa_SuppliersData-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: suppliersdata_SuppliersData_html_repo_host
+          ServiceInstanceName: SuppliersData-html5-app-host-service
+          ServiceKeyName: SuppliersData_html_repo_host-key
+          sap.cloud.service: suppliersdata
+        - Authentication: OAuth2UserTokenExchange
+          Name: suppliersdata_uaa_SuppliersData
+          ServiceInstanceName: SuppliersData-xsuaa-service
+          ServiceKeyName: uaa_SuppliersData-key
+          sap.cloud.service: suppliersdata
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: SuppliersData-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: SuppliersData_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - supplierinfo.zip
+      name: supplierinfo
+      target-path: resources/
+- name: supplierinfo
+  type: html5
+  path: app/supplierinfo
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: SuppliersData-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+- name: SuppliersData-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: SuppliersData-destination-service
+    service-plan: lite
+- name: SuppliersData_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: SuppliersData-html5-app-host-service
+    service-plan: app-host
+- name: uaa_SuppliersData
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: SuppliersData-xsuaa-service
+    service-plan: application
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production
