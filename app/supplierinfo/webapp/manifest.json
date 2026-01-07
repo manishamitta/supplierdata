@@ -126,19 +126,20 @@
               "controlConfiguration": {
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
-                    "type": "ResponsiveTable"
+                    "type": "GridTable"
                   },
                   "actions": {
                     "SuppliersUpdate": {
                       "press": "supplierinfo.ext.controller.SuppliersUpdate.SuppliersUpdate",
-                      "visible": true,
+                      "visible": false,
                       "enabled": true,
                       "requiresSelection": false,
                       "text": "SuppliersUpdate"
                     }
                   }
                 }
-              }
+              },
+              "initialLoad": "Enabled"
             }
           }
         },

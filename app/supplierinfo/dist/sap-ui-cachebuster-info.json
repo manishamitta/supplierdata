@@ -1,13 +1,13 @@
 {
-  "Component.js": 1761217845065,
-  "ext/controller/SuppliersUpdate.js": 1763008075263,
-  "manifest.json": 1761217928810,
-  "i18n/i18n.properties": 1761217870369,
-  "Component-dbg.js": 1761217845065,
-  "Component.js.map": 1763459123647,
-  "ext/controller/SuppliersUpdate-dbg.js": 1763008075263,
-  "ext/controller/SuppliersUpdate.js.map": 1763459123654,
-  "Component-preload.js": 1763459123738,
-  "Component-preload.js.map": 1763459123738,
-  "index.html": 1761217845065
+  "Component-preload.js": 1765259214696,
+  "ext/controller/SuppliersUpdate.js": 1765176546690,
+  "manifest.json": 1765176546690,
+  "Component.js": 1765176546690,
+  "Component-dbg.js": 1765176546690,
+  "Component.js.map": 1765259214624,
+  "ext/controller/SuppliersUpdate-dbg.js": 1765176546690,
+  "ext/controller/SuppliersUpdate.js.map": 1765259214616,
+  "i18n/i18n.properties": 1765176546690,
+  "Component-preload.js.map": 1765259214696,
+  "index.html": 1765176546690
 }
